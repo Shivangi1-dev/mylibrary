@@ -1,0 +1,121 @@
+Sensor Variables
+#define LS1 5
+#define LS2 2
+#define RS1 4
+#define RS2 3
+#define MS 6
+
+//black is high and white is low
+ int LmotorPin1 = 13;
+ int LmotorPin2 = 12;
+ int RmotorPin1 = 11;
+ int RmotorPin2 = 10;
+
+void setup() {
+  // put your setup code here, to run once:
+pinMode(LS1,INPUT);
+pinMode(LS2,INPUT);
+pinMode(MS,INPUT);
+pinMode(RS1,INPUT);
+pinMode(RS2,INPUT);
+
+pinMode(RmotorPin1,OUTPUT);
+pinMode(RmotorPin2,OUTPUT);
+pinMode(LmotorPin1,OUTPUT);
+pinMode(LmotorPin2,OUTPUT);
+
+Serial.begin(9600);
+Serial.print(SensorValue);
+
+int LFSensor[5]= {0, 0 , 0, 0, 0};
+
+LFsensor[0] = analogRead(LS1);
+LFsensor[1] = analogRead(LS2);
+LFsensor[2] = analogRead(MS);
+LFsensor[3] = analogRead(RS1);
+LFsensor[4] = analogRead(RS2);
+
+void loop() {
+  // put your main code here, to run repeatedly:
+// error using PID:
+// defining error for each sensor
+
+if((LFSensor[0]== 0 )&&(LFSensor[1]== 0 )&&(LFSensor[2]== 0 )&&(LFSensor[3]== 0 )&&(LFSensor[4]== 1 )) val = 4;
+else if((LFSensor[0]== 0 )&&(LFSensor[1]== 0 )&&(LFSensor[2]== 0 )&&(LFSensor[3]== 1 )&&(LFSensor[4]== 1 )) val = 3; 
+else if((LFSensor[0]== 0 )&&(LFSensor[1]== 0 )&&(LFSensor[2]== 0 )&&(LFSensor[3]== 1 )&&(LFSensor[4]== 0 )) val = 2;
+else if((LFSensor[0]== 0 )&&(LFSensor[1]== 0 )&&(LFSensor[2]== 1 )&&(LFSensor[3]== 1 )&&(LFSensor[4]== 0 )) val = 1;
+else if((LFSensor[0]== 0 )&&(LFSensor[1]== 0 )&&(LFSensor[2]== 1 )&&(LFSensor[3]== 0 )&&(LFSensor[4]== 0 )) val = 0;
+else if((LFSensor[0]== 0 )&&(LFSensor[1]== 1 )&&(LFSensor[2]== 1 )&&(LFSensor[3]== 0 )&&(LFSensor[4]== 0 )) val = -1;
+else if((LFSensor[0]== 0 )&&(LFSensor[1]== 1 )&&(LFSensor[2]== 0 )&&(LFSensor[3]== 0 )&&(LFSensor[4]== 0 )) val = -2;
+else if((LFSensor[0]== 1 )&&(LFSensor[1]== 1 )&&(LFSensor[2]== 0 )&&(LFSensor[3]== 0 )&&(LFSensor[4]== 0 )) val = -3;
+else if((LFSensor[0]== 1 )&&(LFSensor[1]== 0 )&&(LFSensor[2]== 0 )&&(LFSensor[3]== 0 )&&(LFSensor[4]== 0 )) val = -4;
+
+// loop:
+currentTime = millis();
+elapsedTime = currentTime - previousTime;
+
+//error calc:
+error = setPoint - input;
+cumulativeError += error * elapsedTime;
+
+
+case(val) {
+  case 4: TurnRightnin(error);
+  case 3: TurnRightnin(error);
+  case 2: TurnRight(error);
+  case 1: TurnRight(error);
+  case 0: MoveAhead(error);
+  case -1: TurnLeft(error);
+  case -2: TurnLeft(error);
+  case -3: TurnLeftnin(error);
+  case -4: TurnLeftnin(error);
+  }
+
+int TurnRightnin(int x)
+  {
+    analogWrite(RmotorPin1,0);
+    analogWrite(RmotorPin2,x);
+    analogWrite(LmotorPin1,x);
+    analogWrite(LmotorPin2,0);
+    }
+int TurnRight(int x)
+  {
+    analogWrite(RmotorPin1,0);
+    analogWrite(RmotorPin2,x);
+    analogWrite(LmotorPin1,x);
+    analogWrite(LmotorPin2,0);
+    }
+int TurnLeft(int x)
+  {
+    analogWrite(RmotorPin1,x);
+    analogWrite(RmotorPin2,0);
+    analogWrite(LmotorPin1,0);
+    analogWrite(LmotorPin2,x);
+    }
+int TurnLeftnin(int x)
+  {
+    analogWrite(RmotorPin1,x);
+    analogWrite(RmotorPin2,0);
+    analogWrite(LmotorPin1,0);
+    analogWrite(LmotorPin2,x);
+    }
+int MoveAhead(int x)
+  {
+    analogWrite(RmotorPin1,x);
+    analogWrite(RmotorPin2,0);
+    analogWrite(LmotorPin1,x);
+    analogWrite(LmotorPin2,0);
+    }
+int Stop(int x)
+  {
+    analogWrite(RmotorPin1,0);
+    analogWrite(RmotorPin2,0);
+    analogWrite(LmotorPin1,0);
+    analogWrite(LmotorPin2,0);
+    }
+
+    
+
+
+rightServo.writeMicroseconds(1500 + iniMotorPower);
+leftServo.writeMicroseconds(1500 - iniMotorPower);

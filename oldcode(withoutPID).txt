@@ -1,0 +1,149 @@
+
+int RMotorPin1 = 13;  
+int RMotorPin2 = 12;      // M2
+
+// Pin Variables for Left Motor
+int LMotorPin1 = 11;
+int LMotorPin2 = 10;     //M1
+ 
+#define LS1 5
+#define RS1 2
+#define LS2 4
+#define RS2 3
+
+ 
+// Black is HIGH && White is LOW
+
+//Turn Memory Int : -ve for left, + for right
+int turnMem=0;
+
+// Pin Variables for Right 
+
+//Debug stuff 
+int count=0;
+float timeVar=millis();
+
+
+void setup()
+{
+  pinMode(LS1,INPUT);
+  pinMode(RS1,INPUT);
+  pinMode(LS2,INPUT);
+  pinMode(RS2,INPUT);
+  
+  pinMode(RMotorPin1,OUTPUT);
+  pinMode(RMotorPin2,OUTPUT);
+  
+  pinMode(LMotorPin1,OUTPUT);
+  pinMode(LMotorPin2,OUTPUT);
+  Serial.begin(9600);
+  Serial.println("Debug data");
+}
+ 
+void loop()
+{
+  count++;
+  if( (digitalRead(LS2)== LOW) && (digitalRead(LS1) == HIGH) && (digitalRead(RS1)== HIGH) && (digitalRead(RS2)== LOW))
+  {
+    MoveForward();  // Moving Forward
+  }
+
+ // if(((digitalRead(LS1) == HIGH) && (digitalRead(RS1)== LOW) && (digitalRead(LS2)== LOW) && (digitalRead(RS2)== LOW)) || ((digitalRead(LS1) == LOW) && (digitalRead(RS1)== LOW) && (digitalRead(LS2)== HIGH) && (digitalRead(RS2)== LOW)) || ((digitalRead(LS1) == HIGH) && (digitalRead(RS1)== LOW) && (digitalRead(LS2)== HIGH) && (digitalRead(RS2)== LOW)))
+  if(((digitalRead(LS2)== HIGH) && (digitalRead(RS1)== LOW) && (digitalRead(RS2)== LOW)) || ((digitalRead(LS2) == LOW) && (digitalRead(LS1) == HIGH) && (digitalRead(RS1) == LOW) && (digitalRead(RS2) == LOW)) || (( digitalRead(LS2) == LOW) && (digitalRead(LS1) == HIGH) && (digitalRead(RS1) == LOW) && (digitalRead(RS2) == HIGH)) || (( digitalRead(LS2) == LOW) && (digitalRead(LS1) == LOW) && (digitalRead(RS1) == LOW) && (digitalRead(RS2) == HIGH)))
+  {
+    TurnLeft();
+    turnMem=-1;
+  } 
+   //if(((digitalRead(LS1) == LOW) && (digitalRead(RS1)== HIGH) && (digitalRead(LS2)== LOW) && (digitalRead(RS2)== LOW)) || ((digitalRead(LS1) == LOW) && (digitalRead(RS1)== LOW) && (digitalRead(LS2)== LOW) && (digitalRead(RS2)== HIGH)) || ((digitalRead(LS1) == LOW) && (digitalRead(RS1)== HIGH) && (digitalRead(LS2)== LOW) && (digitalRead(RS2)== HIGH)))
+  if(((digitalRead(LS2) == LOW) && (digitalRead(LS1)== LOW) && (digitalRead(RS2)== HIGH)) || ((digitalRead(LS2) == LOW) && (digitalRead(LS1) == LOW) && (digitalRead(RS1) == HIGH) && (digitalRead(RS2) == LOW)) || (( digitalRead(LS2) == HIGH) && (digitalRead(LS1) == LOW) && (digitalRead(RS1) == HIGH) && (digitalRead(RS2) == LOW)) || (( digitalRead(LS2) == LOW) && (digitalRead(LS1) == HIGH) && (digitalRead(RS1) == HIGH) && (digitalRead(RS2) == HIGH)))
+  {
+    TurnRight();
+    turnMem=1;
+  }
+
+  if((digitalRead(LS1) == HIGH)&& (digitalRead(LS2)== HIGH)&& (digitalRead(RS1)== HIGH) && (digitalRead(RS2)== LOW))
+  {
+    TurnNinLeft();
+  }
+  if((digitalRead(LS2)== LOW) && (digitalRead(LS1)== HIGH) && (digitalRead(RS1)== HIGH) && (digitalRead(RS2)== HIGH)) 
+  {
+    TurnNinRight();
+  }
+  if((digitalRead(LS2)== HIGH) && (digitalRead(LS1) == HIGH) && (digitalRead(RS1)== HIGH) && (digitalRead(RS2)== HIGH))
+  { 
+    MoveForward();
+  }
+
+   if( (digitalRead(LS2)== LOW) && (digitalRead(LS1) == LOW) && (digitalRead(RS1)== LOW) && (digitalRead(RS2)== LOW))
+  {
+    if(turnMem<0){
+      TurnLeft();
+    }
+    else if(turnMem>0){
+      TurnRight();
+    }
+    else{
+      MoveForward();
+    }
+  
+  }
+  if(count>500){
+    turnMem=0;
+    count=0;
+  }
+  Serial.print(millis()-timeVar);
+  timeVar=millis();
+  Serial.print("  ");
+  Serial.print(turnMem);
+  Serial.println();
+} 
+
+
+ void MoveForward()
+ {
+    digitalWrite(RMotorPin1, HIGH);
+    digitalWrite(RMotorPin2, LOW);
+    digitalWrite(LMotorPin1, HIGH);
+    digitalWrite(LMotorPin2, LOW); 
+ }
+
+ void Stop()
+ {
+    digitalWrite(RMotorPin1, LOW);
+    digitalWrite(RMotorPin2, LOW);
+    digitalWrite(LMotorPin1, LOW);
+    digitalWrite(LMotorPin2, LOW); 
+ }
+
+void TurnLeft()
+ {
+    digitalWrite(RMotorPin1, HIGH);
+    digitalWrite(RMotorPin2, LOW);
+    digitalWrite(LMotorPin1, LOW);
+    digitalWrite(LMotorPin2, HIGH); 
+ }
+
+  void TurnRight()
+ {
+    digitalWrite(RMotorPin1, LOW);
+    digitalWrite(RMotorPin2, HIGH);
+    digitalWrite(LMotorPin1, HIGH);
+    digitalWrite(LMotorPin2, LOW); 
+ }
+
+ void TurnNinLeft()
+ {
+    digitalWrite(RMotorPin1, HIGH);
+    digitalWrite(RMotorPin2, LOW);
+    digitalWrite(LMotorPin1, LOW);
+    digitalWrite(LMotorPin2, HIGH); 
+ }
+
+  void TurnNinRight()
+ {
+    digitalWrite(RMotorPin1, LOW);
+    digitalWrite(RMotorPin2, HIGH);
+    digitalWrite(LMotorPin1, HIGH);
+    digitalWrite(LMotorPin2, LOW); 
+ }
+ 
